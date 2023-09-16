@@ -32,9 +32,9 @@ return [
     ],
 
     'firebase' => [
-        'api_key' => 'api_key', // Only used from JS integration
-        'auth_domain' => 'auth_domain', // Only used from JS integration
-        'database_url' => 'https://database_url.com/',
-        'storage_bucket' => '', // Only used from JS integration
+        'api_key' => 'AIzaSyBk0Plf2Fs-X73P5lEuysrCuaBgY2W84Eo', // Only used from JS integration
+        'auth_domain' => 'spbklu2.firebaseapp.com', // Only used from JS integration
+        'database_url' => 'https://spbklu2-default-rtdb.firebaseio.com/',
+        'storage_bucket' => 'spbklu2.appspot.com', // Only used from JS integration
     ],
 ];

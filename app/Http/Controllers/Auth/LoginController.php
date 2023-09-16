@@ -47,7 +47,7 @@ class LoginController extends Controller
     public function __construct(FirebaseAuth $auth)
     {
         $this->middleware("guest")->except("logout");
-        $this->auth =app("firebase.auth");
+        $this->auth = app("firebase.auth");
       // $auth = app("firebase.auth");
     }
 

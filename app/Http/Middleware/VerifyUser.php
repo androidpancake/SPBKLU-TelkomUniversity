@@ -20,12 +20,32 @@ class VerifyUser
     public function handle(Request $request, Closure $next): Response
     {
       $uid = Session::get('uid');
-      $verify = app('firebase.auth')->getUser($uid)->emailVerified;
-        if ($verify == 0) {
-          return redirect()->route('verify');
+
+      try {
+        $user = app('firebase.auth')->getUser($uid);
+
+        if (!$user) {
+            // User not found, redirect to login or handle the error accordingly
+            return redirect()->route('login')->with('error', 'User not found. Please log in again.');
         }
-        else{
-        return $next($request);
-     }
+
+        $verify = $user->emailVerified;
+
+        if ($verify == 0) {
+            return redirect()->route('verify');
+        } else {
+            return $next($request);
+        }
+      } catch (FirebaseException $e) {
+          // Firebase exception occurred, handle the error accordingly
+          return back()->with('error');
+      }
+      //   $verify = app('firebase.auth')->getUser($uid)->emailVerified;
+    //     if ($verify == 0) {
+    //       return redirect()->route('verify');
+    //     }
+    //     else{
+    //     return $next($request);
+    //  }
     }
 }

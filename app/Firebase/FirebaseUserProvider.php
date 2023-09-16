@@ -6,6 +6,7 @@ use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 
 use Kreait\Firebase\Contract\Auth as FirebaseAuth;
 use App\Models\User;
+use Kreait\Firebase\Exception\FirebaseException;
 
 class FirebaseUserProvider implements UserProvider {
    protected $hasher;
@@ -17,13 +18,19 @@ class FirebaseUserProvider implements UserProvider {
       $this->auth = app('firebase.auth');
    }
    public function retrieveById($identifier) {
-      $firebaseUser = $this->auth->getUser($identifier);
-      $user = new User([
-         'localId' => $firebaseUser->uid,
-         'email' => $firebaseUser->email,
-         'displayName' => $firebaseUser->displayName
-      ]);
-      return $user;
+
+      try {
+         $firebaseUser = $this->auth->getUser($identifier);
+         $user = new User([
+            'localId' => $firebaseUser->uid,
+            'email' => $firebaseUser->email,
+            'displayName' => $firebaseUser->displayName
+         ]);
+         return $user;
+      } catch (FirebaseException $e) {
+         return redirect()->route('login');
+      }
+         
    }
    public function retrieveByToken($identifier, $token) {}
    public function updateRememberToken(UserContract $user, $token) {}

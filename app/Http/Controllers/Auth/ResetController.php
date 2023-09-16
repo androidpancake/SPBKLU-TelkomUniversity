@@ -84,9 +84,8 @@ class ResetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
      // Verify Email Store Method
-    public function verify($request)
+    public function verify()
     {
         try {
           $uid = Session::get('uid');

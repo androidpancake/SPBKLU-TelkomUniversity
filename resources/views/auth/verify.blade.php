@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('content')
-<div class="container">
+<div class="bg-white rounded">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="bg-white rounded border">
                 <div class="card-header">{{ __('Verify Your Email Address') }}</div>
 
                 <div class="card-body">
@@ -12,13 +12,16 @@
                         <div class="alert alert-success" role="alert">
                             {{ __('A fresh verification link has been sent to your email address.') }}
                         </div>
+                        <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <span class="font-medium">{{ __('A fresh verification link has been sent to your email address.') }}</span>
+                        </div>
                     @endif
 
                     {{ __('Before proceeding, please check your email for a verification link.') }}
                     {{ __('If you did not receive the email') }},
-                    <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                    <form class="inline-flex" method="POST" action="{{ route('verification.resend') }}">
                         @csrf
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>.
+                        <button type="submit" class="bg-blue py-2.5 px-2">{{ __('click here to request another') }}</button>.
                     </form>
                 </div>
             </div>
