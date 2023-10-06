@@ -12,7 +12,7 @@
 <body>
     
 <nav class="fixed top-0 right-0 left-0 bg-green-500 border-gray-200 dark:bg-gray-900">
-  <div class="max-w-screen-xl flex justify-between items-center p-4">
+  <div class="flex justify-between items-center p-4">
     <div>
         @yield('breadcrumb')
     </div>

@@ -14,6 +14,10 @@
                     <p class="font-semibold">{{ $user->displayName }}</p>
                 </div>
                 <div class="flex justify-between">
+                    <p class="text-base text-gray-500">Key</p>
+                    <p class="font-semibold">{{ $id }}</p>
+                </div>
+                <div class="flex justify-between">
                     <p class="text-base text-gray-500">Stasiun</p>
                     <p class="font-semibold">{{ $bookingData['station'] }}</p>
                 </div>

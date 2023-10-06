@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\DoneEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -51,8 +52,6 @@ Route::post('verify', [ResetController::class, 'verify'])->name('reset.verify');
 
 Route::patch('/home/profile/update_password', [ProfileController::class, 'update_password'])->name('profile.password');
 
-Route::get('screen/getbooking/');
-
 Route::group(['middleware' => 'fireauth'], function(){
     //list
     Route::get('station/list', [StationController::class, 'station'])->name('station.list');
@@ -72,8 +71,6 @@ Route::group(['middleware' => 'fireauth'], function(){
     Route::get('/midtrans/finish', [MidtransController::class, 'finish']);
     Route::get('/midtrans/unfinish', [MidtransController::class, 'unfinish']);
     Route::get('/midtrans/error', [MidtransController::class, 'error']);
-
-    
 
     Route::get('booking/empty', function(){
         return view('booking.empty');
@@ -96,7 +93,13 @@ Route::post('booking/guide/2/{id}', [BookingController::class, 'setupguide2'])->
 Route::post('booking/guide/done/{id}', [BookingController::class, 'done'])->name('booking.done');
 
 // api
-Route::get('monitor', [MonitorController::class, 'index'])->name('monitor.index');
+Route::get('/monitor', function(){
+    return view('api.monitor');
+})->name('monitor.index');
+Route::get('guide1', [MonitorController::class, 'guide1'])->name('monitor.guide1');
+Route::post('monitor/guide/1/{id}', [BookingController::class, 'api_setupguide1'])->name('monitor.guide1');
+Route::post('monitor/guide/2/{id}', [BookingController::class, 'api_setupguide2'])->name('monitor.guide2');
+Route::post('monitor/guide/done/{id}', [BookingController::class, 'api_done'])->name('monitor.done');
 Route::get('terms-condition', function(){
     return view('terms.terms-condition');
 });

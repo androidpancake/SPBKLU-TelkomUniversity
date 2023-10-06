@@ -61,7 +61,8 @@ class TranscationController extends Controller
                     'transaction_time' => now()->toDateString(),
                     'price' => 20000,
                     'status' => 'UNPAID',
-                    'user_id' => $uid
+                    'user_id' => $uid,
+                    'displayName' => $user->displayName
                 ]);
 
                 return redirect()->route('transaction.detail', ['id' => $transactionRef->getKey()]);

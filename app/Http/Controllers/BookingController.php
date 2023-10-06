@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\BookingCodeProcessed;
+use App\Events\BookingDetail;
+use App\Events\DoneEvent;
+use App\Events\GuideEvent;
 use Illuminate\Http\Request;
 use Pusher\Pusher;
 
@@ -28,7 +31,6 @@ class BookingController extends Controller
             if(isset($data['bookingCode']) && $data['bookingCode'] == $bookingCode && $data['status'] === 'SUCCESS') 
             {
                 $transactionData = $data;
-                $transactionKey = $key;
                 break;
             }
         }
@@ -38,8 +40,8 @@ class BookingController extends Controller
         {
             return redirect()->back()->with('error', 'Terjadi error atau kode booking tidak valid');
         } 
-        // dd($transactionData);
-        event(new BookingCodeProcessed($transactionData));
+        
+        event(new BookingCodeProcessed($transactionData, $key));
 
         return redirect()->route('booking.detail', ['id' => $key, 'data' => $transactionData]);
     }
@@ -92,6 +94,8 @@ class BookingController extends Controller
         {
             $doorsRef = $database->getReference('doors/'.$selectedSlot);
             $doorsRef->set(1);
+
+            event(new BookingDetail($selectedSlot, $id));
         }
         
         return view('booking.guide1', [
@@ -116,6 +120,8 @@ class BookingController extends Controller
         {
             $doorsRef = $database->getReference('doors/'.$slot);
             $doorsRef->set(1);
+
+            event(new GuideEvent($slot));
         }
         
         return view('booking.guide2', [
@@ -144,8 +150,98 @@ class BookingController extends Controller
         $transactionRef->update([
             'status' => 'DONE'
         ]);
+
+        event(new DoneEvent());
         
         return redirect()->route('booking.index');
+
+    }
+
+    public function api_setupguide1($id)
+    {
+        //code
+        $database = app('firebase.database');
+        $transactionRef = $database->getReference('transactions/'.$id);
+
+        //step 1
+        $transactionData = $transactionRef->getValue();
+
+        //step 2
+        $bookedStatusRef = $database->getReference('Booked Status');
+        $bookedStatusData = $bookedStatusRef->getValue(); 
+        $spbkluRef = $database->getReference('SPBKLU');
+        $spbkluData = $spbkluRef->getValue();
+
+        $selectedSlot = null;   
+
+        foreach($bookedStatusData as $slot => $status)
+        {
+            if($status === 'Empty'){
+                $selectedSlot = $slot;
+                break;
+            }
+        }
+
+        // dd($selectedSlot);
+
+        if($selectedSlot)
+        {
+            $doorsRef = $database->getReference('doors/'.$selectedSlot);
+            $doorsRef->set(1);
+        }
+        
+        return view('api.guide1', [
+            'id' => $id,
+            'selectedSlot' => $selectedSlot
+        ]);
+    }
+
+    public function api_setupguide2($id)
+    {
+        //code
+        $database = app('firebase.database');
+        $transactionRef = $database->getReference('transactions/'.$id);
+
+        //step 1
+        $transactionData = $transactionRef->getValue();
+        // dd($transactionData);
+        //step 2
+        $slot = $transactionData['slot'];
+
+        if($slot)
+        {
+            $doorsRef = $database->getReference('doors/'.$slot);
+            $doorsRef->set(1);
+        }
+        
+        return view('api.guide2', [
+            'id' => $id,
+            'selectedSlot' => $slot
+        ]);
+    }
+
+    public function api_done($id)
+    {
+        $database = app('firebase.database');
+        $transactionRef = $database->getReference('transactions/'.$id);
+
+        //step 1
+        $transactionData = $transactionRef->getValue();
+        // dd($transactionData);
+        //step 2
+        $slot = $transactionData['slot'];
+
+        if($slot)
+        {
+            $doorsRef = $database->getReference('doors/'.$slot);
+            $doorsRef->set(0);
+        }
+
+        $transactionRef->update([
+            'status' => 'DONE'
+        ]);
+        
+        return redirect()->route('monitor.index');
 
     }
 

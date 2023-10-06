@@ -10,19 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BookingCodeProcessed implements ShouldBroadcast
+class BookingDetail implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $transactionData;
-    public $key;
+    public $selectedSlot;
+    public $id;
     /**
      * Create a new event instance.
      */
-    public function __construct($transactionData, $key)
+    public function __construct($selectedSlot, $id)
     {
-        $this->transactionData = $transactionData;
-        $this->key = $key;
+        $this->id = $id;
+        $this->selectedSlot = $selectedSlot;
     }
 
     /**
@@ -30,14 +30,15 @@ class BookingCodeProcessed implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
-        // return new Channel('booking-monitor');
-        return ['booking-monitor'];
+        return [
+            'booking-detail'
+        ];
     }
-
+    
     public function broadcastAs()
     {
-        return 'booking-monitor';
+        return 'booking-detail';
     }
 }

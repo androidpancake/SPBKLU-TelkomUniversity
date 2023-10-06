@@ -1,11 +1,8 @@
-@extends('layouts.template')
+@extends('layouts.guest')
 @section('content')
-@section('breadcrumb')
-@include('layouts.breadcrumb')
-@endsection
 <div class="flex flex-col bg-gray-50 h-screen">
     <img src="{{ asset('storage/image/bg-telu.png') }}" class="h-auto" alt="">
-    <form action="{{ route('booking.done', $id) }}" method="POST">
+    <form action="{{ route('monitor.done', $id) }}" method="POST">
         @csrf
         <div class="flex flex-col space-y-2 w-full p-3">
             <div class="bg-white p-2 rounded-lg border-2 flex justify-center">
