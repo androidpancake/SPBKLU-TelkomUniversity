@@ -221,6 +221,7 @@ class TranscationController extends Controller
             $paymentUrl = Snap::createTransaction($midtrans_params)->redirect_url;
             //redirect ke halaman midtrans
             header('location: '.$paymentUrl);
+            exit();
         } catch (DatabaseException $e) {
             //throw $th;
             echo $e->getMessage();
